@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <!-- Head -->
+    <%- include("../partials/head") %>
+
+    <body>
+        <div id="global-loader" >
+            <div class="whirly-loader"> </div>
+        </div>
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+
+            <!-- Header -->
+            <%- include("../partials/header") %>
+
+            <div class="page-wrapper">
+                <div class="content">
+                    <div class="page-header">
+						<div class="row">
+							<div class="col">
+								<h3 class="page-title">Devices</h3>
+							</div>
+						</div>
+					</div>
+                    <div class="row">
+						<div class="col-lg-2 col-md-12">
+							<ul class="inbox-menu">
+								<li class="active">
+									<a href="/s/devices"><i class="fas fa-print"></i>Devices</a>
+								</li>
+								<li>
+									<a href="/s/users"><i class="fas fa-users"></i>Users</a>
+								</li>
+								<li>
+									<a href="/s/customers"><i class="fas fa-users"></i>Customers</a>
+								</li>
+								<li>
+									<a href="/s/office"><i class="fas fa-home"></i>Office</a>
+								</li>
+							</ul>
+						</div>
+						
+						<div class="col-lg-10 col-md-12">
+							<div class="card bg-white">
+								<div class="card-body">
+                                    <!--  -->
+                                    <div class="table-top">
+                                        <div class="search-set"></div>
+                                        <div class="wordset">
+                                            <ul>
+                                                <li>
+                                                    <button data-bs-toggle="modal" data-bs-target="#modalAddDevice"
+                                                        class="btn btn-sm bg-success text-white">&plus; Add Device
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div><br>
+                                    <!--  -->
+									<div class="">
+										<div class="table-responsive">
+                                            <%
+                                                let offices = data["offices"];
+                                                for(let i in offices) {
+                                            %>
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th><label class="name"><%= offices[i]['details'] %></label></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+
+                                                        <tr class="">
+                                                            <td rowspan="12">
+                                                                <div class="row" style="padding: 10px;">
+                                                                    <% 
+                                                                        let devices = offices[i]['devices'];
+                                                                        for(let d in devices) {
+                                                                    %>
+                                                                        <!-- Devices -->
+                                                                        <div class="card bg-light col-lg-2" style="padding: 0px; margin-right: 2px;">
+                                                                            <a href="/s/reported-issue/<%= devices[d]['id'] %>">
+                                                                                <div class="card-body">
+                                                                                    <h4 class="text-center" style="font-weight: bold;">Device</h4>
+                                                                                    <div class="setvalue" style="padding: 0px;">
+                                                                                        <ul>
+                                                                                            <li>
+                                                                                                <h5 style="font-weight: bold;">Reported</h5>
+                                                                                                <h6 class="text-danger"><%= 'x' + devices[d]['reported'] %></h6>
+                                                                                            </li>
+                                                                                        </ul><hr>
+                                                                                    </div>
+                                                                                    <!--  -->
+                                                                                    <ul>
+                                                                                        <li>
+                                                                                            <div class="setvalue" style="padding: 0px;">
+                                                                                                <ul>
+                                                                                                    <li>
+                                                                                                        <h5 style="font-weight: bold;">Device Tel No:- </h5>
+                                                                                                        <div style="width: 110px; 
+                                                                                                        overflow: hidden; text-align: end;"><%= devices[d]['simCardNumber'] %></div>
+                                                                                                    </li>
+                                                                                                </ul>
+                                                                                            </div>
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            <div class="setvalue" style="padding: 0px;">
+                                                                                                <ul>
+                                                                                                    <li>
+                                                                                                        <h5 style="font-weight: bold;">Serial Number:- </h5>
+                                                                                                        <div style="width: 105px; 
+                                                                                                        overflow: hidden; text-align: end"><%= devices[d]['serialNumber'] %></div>
+                                                                                                    </li>
+                                                                                                </ul>
+                                                                                            </div>
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            <div class="setvalue" style="padding: 0px;">
+                                                                                                <ul>
+                                                                                                    <li>
+                                                                                                        <h5 style="font-weight: bold;">Location Address:- </h5>
+                                                                                                        <div style="width: 100px; 
+                                                                                                        overflow: hidden; text-align: end"><%= devices[d]['locationAddress'] %></div>
+                                                                                                    </li>
+                                                                                                </ul>
+                                                                                            </div>
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                    <% if(devices[d]['status'] == 'collected'){ %>
+                                                                                        <!--  -->
+                                                                                        <button style="font-size: 14px;" class="btn btn-submit bg-success form-control">COLLECTED</button>
+                                                                                    <% } else { %>
+                                                                                        <!--  -->
+                                                                                        <button style="font-size: 14px;" class="btn btn-submit bg-warning form-control">NOT COLLECTED</button>
+                                                                                    <% } %>
+                                                                                </div>
+                                                                            </a>
+                                                                        </div>
+                                                                        <!-- End Devices -->
+                                                                    <% } %>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+                                                        
+                                                    </tbody>
+                                                </table>
+                                            <% } %>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+                </div>
+            </div>
+        </div>
+        <!-- /Main Wrapper -->
+
+        <!-- Modal add device -->
+        <div class="modal fade" id="modalAddDevice" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Device</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!--  -->
+                        <form action="/s/add-device" method="post">
+                            <div class="row">
+
+                                <!--  -->
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-6 col-6">
+                                        <div class="form-group">
+                                            <label>Serial Number <span class="text-danger">&nbsp;*</span></label>
+                                            <input type="text" name="serialNumber" placeholder="10xxxxxxxx" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-sm-6 col-6">
+                                        <div class="form-group">
+                                            <label>Device Tel No. <span class="text-danger">&nbsp;*</span></label>
+                                            <input type="text" name="simCardNumber" placeholder="255xxxxxxxxx" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--  -->
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-6 col-6">
+                                        <div class="form-group">
+                                            <label>Customer <span class="text-danger">&nbsp;*</span></label>
+                                            <div class="row mb-3">
+                                                <div class="col-lg-11 col-sm-11 col-11 ps-0">
+                                                    <select class="select form-control" name="customerId" required>
+                                                        <option value="" disabled selected>*** Choose Customer ***</option>
+                                                        <%
+                                                            let customers = data["customers"];
+                                                            for(let i in customers) {
+                                                        %>
+                                                            <option value="<%= customers[i]['id'] %>"><%= customers[i]['customerName'] %></option>
+                                                        <% } %>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-1 col-sm-1 col-1 ps-0">
+                                                    <a class="add-icon" data-bs-toggle="modal" data-bs-target="#modalAddCustomer">
+                                                        <span><img src="/assets/img/plus1.svg" alt="img"></span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-sm-6 col-6">
+                                        <div class="form-group">
+                                            <label>Customer (Office Location) <span class="text-danger">&nbsp;*</span></label>
+                                            <input type="text" name="locationAddress" placeholder="Kimara" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--  -->
+                                <div class="form-group">
+                                    <label>Regional Office <span class="text-danger">&nbsp;*</span></label>
+                                    <div class="row mb-3">
+                                        <div class="col-lg-11 col-sm-11 col-11">
+                                            <select class="select form-control" name="officeId" required>
+                                                <option value="" disabled selected>*** Choose Office ***</option>
+                                                <% 
+                                                    let office = data["office"];
+                                                    for(let i in office) {
+                                                %>
+                                                    <option class="text-uppercase" value="<%= office[i]['id'] %>"><%= office[i]['name'] %></option>            
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-1 col-sm-1 col-1 ps-0">
+                                            <a class="add-icon" data-bs-toggle="modal" data-bs-target="#modalAddOffice">
+                                                <span><img src="/assets/img/plus1.svg" alt="img"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!--  -->
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-submit form-control">Submit</button>
+                                </div>
+                                
+                                <input name="deviceId" id="deviceId" style="display: none">
+                            </div>
+                        </form>
+                        <!--  -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal add device -->
+        <div class="modal fade" id="modalAddOffice" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Office</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!--  -->
+                        <form action="/s/add-office" method="post">
+                            <div class="row">
+                                <!--  -->
+                                <div class="form-group">
+                                    <label>Head (Full Name) <span class="text-danger">&nbsp;*</span></label>
+                                    <input type="text" name="head" placeholder="Full name.." required>
+                                </div>
+                                <!--  -->
+                                <div class="form-group">
+                                    <label>Head (Phone Number) <span class="text-danger">&nbsp;*</span></label>
+                                    <input type="text" name="phoneNumber" placeholder="Phone number.." required>
+                                </div>
+                                <!--  -->
+                                <div class="form-group">
+                                    <label>Location (City) <span class="text-danger">&nbsp;*</span></label>
+                                    <select class="form-control" name="cityId" required>
+                                        <option value="" disabled selected>*** Choose City ***</option>
+                                        <% 
+                                            let cities = data["cities"];
+                                            for(let i in cities) {
+                                        %>
+                                            <option class="text-uppercase" value="<%= cities[i]['id'] %>"><%= cities[i]['city'] %></option>            
+                                        <% } %>
+                                    </select>    
+                                </div>
+                                <!--  -->
+                                <div class="form-group">
+                                    <label>Location (Address)<span class="text-danger">&nbsp;*</span></label>
+                                    <input type="text" name="locationAddress" placeholder="Kimara, Dar es salaam.." required>
+                                </div>
+                                <!--  -->
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-submit form-control">Submit</button>
+                                </div>
+                                <!--  -->
+                                <input name="customerId" id="customerId" style="display: none">
+                            </div>
+                        </form>
+                        <!--  -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal add device -->
+        <div class="modal fade" id="modalAddCustomer" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Customer</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!--  -->
+                        <form action="/s/add-customer" method="post">
+                            <div class="row">
+
+                                <!--  -->
+                                <div class="form-group">
+                                    <label>Phone Number <span class="text-danger">&nbsp;*</span></label>
+                                    <input type="text" name="phoneNumber" placeholder="Phone number.." required>
+                                </div>
+                                
+                                <!--  -->
+                                <div class="form-group">
+                                    <label>Trade Name <span class="text-danger">&nbsp;*</span></label>
+                                    <input type="text" name="tradeName" placeholder="Trade name.." required>
+                                </div>
+                                
+                                <!--  -->
+                                <div class="form-group">
+                                    <label>Company Name <span class="text-danger">&nbsp;*</span></label>
+                                    <input type="text" name="companyName" placeholder="Company name.." required>
+                                </div>
+                            
+                                <!--  -->
+                                <div class="form-group">
+                                    <label>Regional Office <span class="text-danger">&nbsp;*</span></label>
+                                    <div class="row mb-3">
+                                        <div class="col-lg-11 col-sm-11 col-11">
+                                            <select class="select form-control" name="officeId" required>
+                                                <option value="" disabled selected>*** Choose Office ***</option>
+                                                <% 
+                                                    for(let i in office) {
+                                                %>
+                                                    <option class="text-uppercase" value="<%= office[i]['id'] %>"><%= office[i]['name'] %></option>            
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-1 col-sm-1 col-1 ps-0">
+                                            <a class="add-icon" data-bs-toggle="modal" data-bs-target="#modalAddOffice">
+                                                <span><img src="/assets/img/plus1.svg" alt="img"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--  -->
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-submit form-control">Submit</button>
+                                </div>
+                                
+                                <input name="customerId" id="customerId" style="display: none">
+                            </div>
+                        </form>
+                        <!--  -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Script -->
+        <%- include("../partials/script") %>
+
+        <!-- Script -->
+        <%- include("../partials/flash") %>
+        
+        <!-- Script -->
+        <%- include("../partials/footer") %>
+        
+    </body>
+</html>

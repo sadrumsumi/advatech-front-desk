@@ -1,0 +1,9 @@
+<script>
+    let error = '<%= error %>';
+    let success = '<%= success %>';
+    if (error != "") {
+        toastr.error(error);
+    } else if (success != "") {
+        toastr.success(success);
+    }
+</script>
