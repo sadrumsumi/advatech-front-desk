@@ -11,6 +11,7 @@ import {
 } from "../entities";
 import { Equal } from "typeorm";
 import { AppDataSource } from "../../ormconfig";
+import moment = require("moment-timezone");
 
 export class StaffModel {
   //
@@ -419,8 +420,10 @@ export class StaffModel {
               notifications: queries.map((e) => {
                 return {
                   deviceId: e.device.id,
-                  date: e.createdAt,
-                  query: e.reportedIssue,
+                  date: moment(e.createdAt)
+                    .tz("Africa/Dar_es_Salaam")
+                    .format("DD-MM-yyyy, HH:mm:ss"),
+                  query: `Device: ${e.device.serialNumber}`,
                 };
               }),
               office: officeData,

@@ -130,7 +130,8 @@ export class BrowseModel {
         // Give feedback
         resolve({
           status: true,
-          message: {
+          message: "Success",
+          data: {
             newPassword: "e",
             confirmPassword: "e",
             currentPassword: "e",

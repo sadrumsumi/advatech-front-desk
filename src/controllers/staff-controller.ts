@@ -123,9 +123,9 @@ export class StaffController {
   static async reportedIssue2(req: Request, res: Response, next: NextFunction) {
     const session = new Auth(req);
     const resp = await StaffModel.reportedIssue2(session.id).catch(next);
-    resp.data["notifiy"] = 0;
-    resp.data["notifications"] = [];
-    res.render("s/reported-issue-2", { data: { data: resp.data } });
+    res.render("s/reported-issue-2", {
+      data: { notifiy: 0, notifications: [], data: resp.data },
+    });
   }
 
   // Task Module

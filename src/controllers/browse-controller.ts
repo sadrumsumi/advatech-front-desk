@@ -80,7 +80,9 @@ export class BrowseController {
     const session = new Auth(req);
     options["userId"] = session.id;
     const resp = await BrowseModel.profile(options).catch(next);
-    res.render("profile", { data: resp.message });
+    resp.data["notifiy"] = 0;
+    resp.data["notifications"] = [];
+    res.render("profile", { data: resp.data });
   }
 
   // Update profile
