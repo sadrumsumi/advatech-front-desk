@@ -15,6 +15,7 @@ import moment = require("moment-timezone");
 import { UserTaskEntity } from "./user_task_entity";
 import { DeviceEntity } from "./device_entity";
 import { OfficeEntity } from "./office_entity";
+import { UserEntity } from "./user_entity";
 
 @Entity({ name: "task" })
 export class TaskEntity extends BaseEntity {
@@ -38,6 +39,9 @@ export class TaskEntity extends BaseEntity {
 
   @Column({ nullable: false })
   timeOut: string;
+
+  @Column({ default: "not collected" })
+  status: string;
 
   // Date
   @CreateDateColumn({ type: "timestamp" })
@@ -70,8 +74,10 @@ export class TaskEntity extends BaseEntity {
   })
   device: DeviceEntity;
 
-  @OneToMany((type) => UserTaskEntity, (user_task) => user_task.task)
-  userTask: UserTaskEntity;
+  @ManyToOne((type) => UserEntity, (user) => user.task, {
+    nullable: false,
+  })
+  user: UserEntity;
 
   constructor(data?: TaskParameter) {
     super();
@@ -84,6 +90,7 @@ export class TaskEntity extends BaseEntity {
       this.timeOut = data.timeOut;
       this.office = data.office;
       this.device = data.device;
+      this.user = data.user;
     }
   }
 }
@@ -95,6 +102,7 @@ interface TaskParameter {
   reportedDate: string;
   timeIn: string;
   timeOut: string;
+  user: UserEntity;
   office: OfficeEntity;
   device: DeviceEntity;
 }

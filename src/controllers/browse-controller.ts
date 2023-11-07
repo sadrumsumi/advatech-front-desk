@@ -83,6 +83,15 @@ export class BrowseController {
     res.render("profile", { data: resp.message });
   }
 
+  // Update profile
+  static async postProfile(req: Request, res: Response, next: NextFunction) {
+    const session = new Auth(req);
+    req.body["userId"] = session.id;
+    const resp = await BrowseModel.postProfile(req.body).catch(next);
+    req.flash(resp.status == true ? "success" : "error", resp.message);
+    res.redirect("/profile");
+  }
+
   // Forget password
   static async forgetPassword(req: Request, res: Response, next: NextFunction) {
     res.render("forget-password", { data: {} });

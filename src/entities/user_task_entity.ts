@@ -43,21 +43,21 @@ export class UserTaskEntity extends BaseEntity {
       .format("yyyy-MM-DDTHH:mm:ss.SSSSSSSZ");
   }
 
-  @ManyToOne((type) => UserEntity, (user) => user.userTask, {
-    nullable: false,
-  })
-  user: UserEntity;
+  // @ManyToOne((type) => UserEntity, (user) => user.userTask, {
+  //   nullable: false,
+  // })
+  // user: UserEntity;
 
-  @ManyToOne((type) => TaskEntity, (task) => task.userTask, {
-    nullable: false,
-  })
-  task: TaskEntity;
+  // @ManyToOne((type) => TaskEntity, (task) => task.userTask, {
+  //   nullable: false,
+  // })
+  // task: TaskEntity;
 
   constructor(data?: UserTaskParameter) {
     super();
     if (data) {
-      this.user = data.user;
-      this.task = data.task;
+      // this.user = data.user;
+      // this.task = data.task;
     }
   }
 }

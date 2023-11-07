@@ -3,6 +3,16 @@ import { StaffModel } from "../models";
 import { Request, Response, NextFunction } from "express";
 
 export class StaffController {
+  //
+  static async monthlyReport(req: Request, res: Response, next: NextFunction) {
+    const session = new Auth(req);
+    if (session.role != "admin" && session.role != "frontdesk")
+      return next(new Error("Permission denied."));
+    const resp = await StaffModel.monthlyReport(req.body).catch(next);
+    req.flash(resp.status == true ? "success" : "error", resp.message);
+    res.redirect("/s/devices");
+  }
+
   // Office Module
   static async office(req: Request, res: Response, next: NextFunction) {
     if (!(new Auth(req).role == "admin"))

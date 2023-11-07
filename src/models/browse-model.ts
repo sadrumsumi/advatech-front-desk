@@ -210,10 +210,6 @@ export class BrowseModel {
           options.push({ phone_number: body["phone"] });
         }
 
-        if (body["email"] != body["old_email"]) {
-          options.push({ email_address: body["email"] });
-        }
-
         let checkUser: UserEntity;
         if (Object.keys(options).length > 0) {
           checkUser = await UserEntity.findOne({ where: options });

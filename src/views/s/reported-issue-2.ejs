@@ -51,9 +51,9 @@
                                         <div class="wordset">
                                             <ul>
                                                 <li>
-                                                    <button data-bs-toggle="modal" data-bs-target="#modalReportIssue"
+                                                    <!-- <button data-bs-toggle="modal" data-bs-target="#modalReportIssue"
                                                         class="btn btn-sm bg-success text-white">&plus; Report Issue
-                                                    </button>
+                                                    </button> -->
                                                 </li>
                                             </ul>
                                         </div>
@@ -71,7 +71,6 @@
                                                         <th>Time Out</th>
                                                         <th>Reported Date</th>
                                                         <th>Status</th>
-                                                        <th>Action</th>
                                                     </tr>
                                                 </thead>
 												<tbody>
@@ -94,7 +93,6 @@
                                                                     <span class="text-danger" style="font-weight: bold;">NOT COLLECTED</span>
                                                                 <% } %>
                                                             </td>
-                                                            <td></td>
                                                         </tr>
                                                     <% } %>
 												</tbody>
@@ -109,163 +107,6 @@
             </div>
         </div>
         <!-- /Main Wrapper -->
-
-        <!-- Modal report issue -->
-        <div class="modal fade" id="modalReportIssue" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Report Issue</h5>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <!--  -->
-                        <form action="/s/report-issue" method="post">
-                            <div>
-                                <!--  -->
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-6 col-6">
-                                        <div class="form-group">
-                                            <label>Reporter Name <span class="text-danger">&nbsp;*</span></label>
-                                            <input type="text" name="reporterName" placeholder="Full name.." required>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-sm-6 col-6">
-                                        <div class="form-group">
-                                            <label>Phone number <span class="text-danger">&nbsp;*</span></label>
-                                            <input type="text" name="phoneNumber" placeholder="Phone number.." required>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!--  -->
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-6 col-6">
-                                        <div class="form-group">
-                                            <label>Time In<span class="text-danger">&nbsp;*</span></label>
-                                            <input type="text" id="datetimepicker_1" name="timeIn" placeholder="Time in.. eg 00:00" required readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-sm-6 col-6">
-                                        <div class="form-group">
-                                            <label>Time Out<span style="color: silver;">&nbsp;(OPTIONAL)</span></label>
-                                            <input type="text" id="datetimepicker_2" name="timeOut" placeholder="Time out.. eg 07:00" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!--  -->
-                                <div class="row">
-                                    <div class="col-lg-12 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <label>Reported Issue <span class="text-danger">&nbsp;*</span></label>
-                                            <textarea type="text" name="reportedIssue" placeholder="Reported issue.." required></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!--  -->
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-6 col-6">
-                                        <div class="form-group">
-                                            <label>Reported Date <span class="text-danger">&nbsp;*</span></label>
-                                            <div class="input-groupicon">
-                                                <input type="date" placeholder="DD-MM-YYYY" class="form-control" name="reportedDate" required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-sm-6 col-6">
-                                        <div class="form-group">
-                                            <label>Assigned To <span class="text-danger">&nbsp;*</span></label>
-                                            <select class="select form-control" name="assignedTo" required>
-                                                <option value="" disabled selected>*** Choose Technician ***</option>
-                                                <%
-                                                    let technicians = data['data']["technicians"];
-                                                    for(let i in technicians) {
-                                                %>
-                                                    <option value="<%= technicians[i]['id'] %>"><%= technicians[i]['name'] %></option>
-                                                <% } %>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!--  -->
-                                <div class="row">
-                                    <div class="col-lg-12 col-sm-12 col-12">
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-submit form-control">Submit</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <input name="deviceId" value="<%= data['deviceId'] %>" style="display: none;">
-                                <input name="reportedIssueId" id="reportedIssueId" style="display: none">
-                            </div>
-                        </form>
-                        <!--  -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal add device -->
-        <div class="modal fade" id="modalAddOffice" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Add Office</h5>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <!--  -->
-                        <form action="/s/add-office" method="post">
-                            <div class="row">
-                                <!--  -->
-                                <div class="form-group">
-                                    <label>Head (Full Name) <span class="text-danger">&nbsp;*</span></label>
-                                    <input type="text" name="head" placeholder="Full name.." required>
-                                </div>
-                                <!--  -->
-                                <div class="form-group">
-                                    <label>Head (Phone Number) <span class="text-danger">&nbsp;*</span></label>
-                                    <input type="text" name="phoneNumber" placeholder="Phone number.." required>
-                                </div>
-                                <!--  -->
-                                <div class="form-group">
-                                    <label>Location (City) <span class="text-danger">&nbsp;*</span></label>
-                                    <select class="form-control" name="cityId" required>
-                                        <option value="" disabled selected>*** Choose City ***</option>
-                                        <% 
-                                            let cities = data["cities"];
-                                            for(let i in cities) {
-                                        %>
-                                            <option class="text-uppercase" value="<%= cities[i]['id'] %>"><%= cities[i]['city'] %></option>            
-                                        <% } %>
-                                    </select>    
-                                </div>
-                                <!--  -->
-                                <div class="form-group">
-                                    <label>Location (Address)<span class="text-danger">&nbsp;*</span></label>
-                                    <input type="text" name="locationAddress" placeholder="Kimara, Dar es salaam.." required>
-                                </div>
-                                <!--  -->
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-submit form-control">Submit</button>
-                                </div>
-                                <!--  -->
-                                <input name="customerId" id="customerId" style="display: none">
-                            </div>
-                        </form>
-                        <!--  -->
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Script -->
         <%- include("../partials/script") %>

@@ -16,6 +16,7 @@ import { RoleEntity } from "./role_entity";
 import { OfficeEntity } from "./office_entity";
 import { UserTaskEntity } from "./user_task_entity";
 import { TokenEntity } from "./token_entity";
+import { TaskEntity } from "./task_entity";
 
 @Entity({ name: "user" })
 export class UserEntity extends BaseEntity {
@@ -68,8 +69,8 @@ export class UserEntity extends BaseEntity {
   @OneToMany((type) => TokenEntity, (token) => token.user)
   token: TokenEntity[];
 
-  @OneToMany((type) => UserTaskEntity, (user_task) => user_task.user)
-  userTask: UserTaskEntity[];
+  @OneToMany((type) => TaskEntity, (task) => task.user)
+  task: TaskEntity[];
 
   constructor(data?: UserParameter) {
     super();

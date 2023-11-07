@@ -92,107 +92,6 @@
         <!-- /Main Wrapper -->
 
         <!-- Modal add device -->
-        <div class="modal fade" id="modalAddDevice" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Add Device</h5>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <!--  -->
-                        <form action="/s/add-device" method="post">
-                            <div class="row">
-
-                                <!--  -->
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-6 col-6">
-                                        <div class="form-group">
-                                            <label>Serial Number <span class="text-danger">&nbsp;*</span></label>
-                                            <input type="text" name="serialNumber" placeholder="10xxxxxxxx" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-sm-6 col-6">
-                                        <div class="form-group">
-                                            <label>Device Tel No. <span class="text-danger">&nbsp;*</span></label>
-                                            <input type="text" name="simCardNumber" placeholder="255xxxxxxxxx" required>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!--  -->
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-6 col-6">
-                                        <div class="form-group">
-                                            <label>Customer <span class="text-danger">&nbsp;*</span></label>
-                                            <div class="row mb-3">
-                                                <div class="col-lg-11 col-sm-11 col-11 ps-0">
-                                                    <select class="select form-control" name="customerId" required>
-                                                        <option value="" disabled selected>*** Choose Customer ***</option>
-                                                        <%
-                                                            let customer = data["customer"];
-                                                            for(let i in customer) {
-                                                        %>
-                                                            <option value="<%= customer[i]['id'] %>"><%= customer[i]['customerName'] %></option>
-                                                        <% } %>
-                                                    </select>
-                                                </div>
-                                                <div class="col-lg-1 col-sm-1 col-1 ps-0">
-                                                    <a class="add-icon" data-bs-toggle="modal" data-bs-target="#modalAddCustomer">
-                                                        <span><img src="/assets/img/plus1.svg" alt="img"></span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-sm-6 col-6">
-                                        <div class="form-group">
-                                            <label>Customer (Office Location) <span class="text-danger">&nbsp;*</span></label>
-                                            <input type="text" name="locationAddress" placeholder="Kimara" required>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!--  -->
-                                <div class="form-group">
-                                    <label>Regional Office <span class="text-danger">&nbsp;*</span></label>
-                                    <div class="row mb-3">
-                                        <div class="col-lg-11 col-sm-11 col-11">
-                                            <select class="select form-control" name="officeId" required>
-                                                <option value="" disabled selected>*** Choose Office ***</option>
-                                                <% 
-                                                    let office = data["office"];
-                                                    for(let i in office) {
-                                                %>
-                                                    <option class="text-uppercase" value="<%= office[i]['id'] %>"><%= office[i]['name'] %></option>            
-                                                <% } %>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-1 col-sm-1 col-1 ps-0">
-                                            <a class="add-icon" data-bs-toggle="modal" data-bs-target="#modalAddOffice">
-                                                <span><img src="/assets/img/plus1.svg" alt="img"></span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!--  -->
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-submit form-control">Submit</button>
-                                </div>
-                                
-                                <input name="deviceId" id="deviceId" style="display: none">
-                            </div>
-                        </form>
-                        <!--  -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal add device -->
         <div class="modal fade" id="modalAddCustomer" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -253,6 +152,62 @@
                                     <button type="submit" class="btn btn-submit form-control">Submit</button>
                                 </div>
                                 
+                                <input name="customerId" id="customerId" style="display: none">
+                            </div>
+                        </form>
+                        <!--  -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal add device -->
+        <div class="modal fade" id="modalAddOffice" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Office</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!--  -->
+                        <form action="/s/add-office" method="post">
+                            <div class="row">
+                                <!--  -->
+                                <div class="form-group">
+                                    <label>Head (Full Name) <span class="text-danger">&nbsp;*</span></label>
+                                    <input type="text" name="head" placeholder="Full name.." required>
+                                </div>
+                                <!--  -->
+                                <div class="form-group">
+                                    <label>Head (Phone Number) <span class="text-danger">&nbsp;*</span></label>
+                                    <input type="text" name="phoneNumber" placeholder="Phone number.." required>
+                                </div>
+                                <!--  -->
+                                <div class="form-group">
+                                    <label>Location (City) <span class="text-danger">&nbsp;*</span></label>
+                                    <select class="form-control" name="cityId" required>
+                                        <option value="" disabled selected>*** Choose City ***</option>
+                                        <% 
+                                            let cities = data["cities"];
+                                            for(let i in cities) {
+                                        %>
+                                            <option class="text-uppercase" value="<%= cities[i]['id'] %>"><%= cities[i]['city'] %></option>            
+                                        <% } %>
+                                    </select>    
+                                </div>
+                                <!--  -->
+                                <div class="form-group">
+                                    <label>Location (Address)<span class="text-danger">&nbsp;*</span></label>
+                                    <input type="text" name="locationAddress" placeholder="Kimara, Dar es salaam.." required>
+                                </div>
+                                <!--  -->
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-submit form-control">Submit</button>
+                                </div>
+                                <!--  -->
                                 <input name="customerId" id="customerId" style="display: none">
                             </div>
                         </form>

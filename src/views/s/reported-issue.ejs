@@ -51,7 +51,8 @@
                                         <div class="wordset">
                                             <ul>
                                                 <li>
-                                                    <button data-bs-toggle="modal" data-bs-target="#modalReportIssue"
+                                                    <button data-bs-toggle="modal"
+                                                        data-bs-target="#modalReportIssue" onclick="reportIssue()"
                                                         class="btn btn-sm bg-success text-white">&plus; Report Issue
                                                     </button>
                                                 </li>
@@ -70,6 +71,7 @@
                                                         <th>Time Out</th>
                                                         <th>Reported Date</th>
                                                         <th>Assigned To</th>
+                                                        <th>Report Status</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
@@ -86,7 +88,21 @@
                                                             <td><%= reported[r]['timeOut'] %></td>
                                                             <td><%= reported[r]['reportedDate'] %></td>
                                                             <td><%= reported[r]['assignedTo'] %></td>
-                                                            <td></td>
+                                                            <td>
+                                                                <% if(reported[r]['status'] == 'collected'){ %>
+                                                                    <p class="text-success">COLLECTED</p>
+                                                                <% } else { %>
+                                                                    <p class="text-warning">NOT COLLECTED</p>
+                                                                <% } %>
+                                                            </td>
+                                                                <td>
+                                                                    <% if(reported[r]['status'] != 'collected'){ %>
+                                                                        <span class="btn btn-sm bg-primary" data-bs-toggle="modal" 
+                                                                            onclick="updateReportIssue(`<%= reported[r]['id'] %>`)" data-bs-target="#modalReportIssue"><i class="fas fa-edit text-white"></i></span>
+                                                                    <% } else { %>
+                                                                        <span class="btn btn-sm bg-success"><i class="fas fa-check text-white"></i></span>
+                                                                    <% } %>
+                                                                </td>
                                                         </tr>
                                                     <% } %>
 												</tbody>
@@ -121,13 +137,13 @@
                                     <div class="col-lg-6 col-sm-6 col-6">
                                         <div class="form-group">
                                             <label>Reporter Name <span class="text-danger">&nbsp;*</span></label>
-                                            <input type="text" name="reporterName" placeholder="Full name.." required>
+                                            <input type="text" id="reporterName" name="reporterName" placeholder="Full name.." required>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-sm-6 col-6">
                                         <div class="form-group">
                                             <label>Phone number <span class="text-danger">&nbsp;*</span></label>
-                                            <input type="text" name="phoneNumber" placeholder="Phone number.." required>
+                                            <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Phone number.." required>
                                         </div>
                                     </div>
                                 </div>
@@ -153,7 +169,7 @@
                                     <div class="col-lg-12 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label>Reported Issue <span class="text-danger">&nbsp;*</span></label>
-                                            <textarea type="text" name="reportedIssue" placeholder="Reported issue.." required></textarea>
+                                            <textarea type="text" id="reportedIssue" name="reportedIssue" placeholder="Reported issue.." required></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -164,14 +180,14 @@
                                         <div class="form-group">
                                             <label>Reported Date <span class="text-danger">&nbsp;*</span></label>
                                             <div class="input-groupicon">
-                                                <input type="date" placeholder="DD-MM-YYYY" class="form-control" name="reportedDate" required>
+                                                <input type="date" placeholder="DD-MM-YYYY" class="form-control" id="reportedDate" name="reportedDate" required>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-sm-6 col-6">
                                         <div class="form-group">
                                             <label>Assigned To <span class="text-danger">&nbsp;*</span></label>
-                                            <select class="select form-control" name="assignedTo" required>
+                                            <select class="select form-control" id="assignedTo" name="assignedTo" required>
                                                 <option value="" disabled selected>*** Choose Technician ***</option>
                                                 <%
                                                     let technicians = data['data']["technicians"];
@@ -179,6 +195,20 @@
                                                 %>
                                                     <option value="<%= technicians[i]['id'] %>"><%= technicians[i]['name'] %></option>
                                                 <% } %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--  -->
+                                <div id="containerReportStatus" class="row">
+                                    <div class="col-lg-12 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <label>Report status <span style="color: silver;">(OPTIONAL)</span></label>
+                                            <select id="reportStatus" name="reportStatus" class="form-control">
+                                                <option value="" selected disabled> *** Query Status *** </option>
+                                                <option value="collected">Collected</option>
+                                                <option value="not collected">Not Collected</option>
                                             </select>
                                         </div>
                                     </div>
@@ -269,6 +299,37 @@
         <%- include("../partials/footer") %>
         
         <script>
+
+            var reported = JSON.parse(`<%- JSON.stringify(reported) %>`);
+
+            function reportIssue() {
+                $("#reportStatus").val("")
+                $("#reportedIssueId").val("");
+                $("#containerReportStatus").hide();
+                $("#datetimepicker_1").val("");
+                $("#datetimepicker_2").val("");
+                $("#reporterName").val("");
+                $("#phoneNumber").val("");
+                $("#reportedIssue").val("");
+                $("#reportedDate").val("");
+                $("#assignedTo").val("");
+            }
+
+            function updateReportIssue(reportId) {
+                $("#containerReportStatus").show();
+                $("#reportedIssueId").val(reportId);
+                // 
+                let report = reported.find(e => e.id == reportId);
+                // 
+                $("#datetimepicker_1").val(report["timeIn"]);
+                $("#datetimepicker_2").val(report["timeOut"]);
+                $("#reporterName").val(report["reporterName"]);
+                $("#phoneNumber").val(report["reporterPhoneNumber"]);
+                $("#reportedIssue").val(report["reportedIssue"]);
+                $("#reportedDate").val(report["reportedDate"]);
+                $("#reportStatus").val(report["status"])
+                $("#assignedTo").val(report["assignedToId"]);
+            }
 
 			$('#datetimepicker_1').datetimepicker({
                 format: 'H:i',

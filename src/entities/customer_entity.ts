@@ -20,10 +20,10 @@ export class CustomerEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column({ nullable: false })
+  @Column({ unique: true, nullable: false })
   tradeName: string;
 
-  @Column({ nullable: false })
+  @Column({ unique: true, nullable: false })
   companyName: string;
 
   @Column({ unique: true, nullable: false })

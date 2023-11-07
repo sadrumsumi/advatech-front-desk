@@ -4,6 +4,9 @@ import { Middleware } from "../utils";
 
 export const staffRoute = Router();
 
+//
+staffRoute.post("/monthly-report", Middleware.login, StaffController.monthlyReport)
+
 // Office Module
 staffRoute.get("/office", Middleware.login, StaffController.office);
 staffRoute.post("/add-office", Middleware.login, StaffController.addOffice);

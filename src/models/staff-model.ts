@@ -13,6 +13,21 @@ import { Equal } from "typeorm";
 import { AppDataSource } from "../../ormconfig";
 
 export class StaffModel {
+  //
+  static monthlyReport(body: any): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+
+        console.log(body)
+
+        // Give feedback
+        resolve({ status: true, message: "", data: {} });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
   // Office Module
   static office(): Promise<any> {
     return new Promise(async (resolve, reject) => {
@@ -257,19 +272,24 @@ export class StaffModel {
     return new Promise(async (resolve, reject) => {
       try {
         await Promise.all([
+          // Fetch cities
+          await CityEntity.find({ where: {} }),
+          //
           await CustomerEntity.find({
             where: officeId ? { office: Equal(officeId) } : {},
           }),
+          //
           await OfficeEntity.find({
             where: officeId ? { id: officeId } : {},
             relations: ["city", "customer", "device", "device.task"],
           }),
-        ]).then(([customers, offices]) => {
+        ]).then(([cities, customers, offices]) => {
           // Give feedback
           resolve({
             status: true,
             message: "Success",
             data: {
+              cities,
               customers,
               offices: offices.map((e) => {
                 return {
@@ -491,24 +511,25 @@ export class StaffModel {
     return new Promise(async (resolve, reject) => {
       try {
         const user = await UserEntity.findOne({
-          relations: ["userTask", "userTask.task", "userTask.task.device"],
+          relations: ["task", "task.user", "task.device"],
           where: { id: userId },
         });
 
-        const reported = user.userTask.map((e) => {
-          const task = e.task;
+        const reported = user.task.map((e) => {
           return {
             status: e.status.toLowerCase(),
-            reporterName: task.reporterName,
-            reporterPhoneNumber: task.reporterPhoneNumber,
-            reportedIssue: task.reportedIssue,
-            reportedDate: task.reportedDate,
-            timeIn: task.timeIn,
-            timeOut: task.timeOut,
-            deviceSerialNumber: task.device.serialNumber,
-            deviceSimeCard: task.device.simCardNumber,
-            deviceLocationAddress: task.device.locationAddress,
-            assignedTo: "You",
+            reporterName: e.reporterName,
+            reporterPhoneNumber: e.reporterPhoneNumber,
+            reportedIssue: e.reportedIssue,
+            reportedDate: e.reportedDate,
+            timeIn: e.timeIn,
+            timeOut: e.timeOut,
+            deviceSerialNumber: e.device.serialNumber,
+            deviceSimeCard: e.device.simCardNumber,
+            deviceLocationAddress: e.device.locationAddress,
+            assignedTo: `${e.user.firstName + " " + e.user.lastName}, ${
+              e.user.phoneNumber
+            }`,
           };
         });
 
@@ -528,10 +549,9 @@ export class StaffModel {
         if (params["deviceId"]) {
           await Promise.all([
             (device = await DeviceEntity.findOne({
-              relations: ["task", "office"],
+              relations: ["task", "task.user", "office"],
               where: { id: params["deviceId"] },
             })),
-
             await AppDataSource.getRepository(UserEntity)
               .createQueryBuilder("user")
               .leftJoin("user.role", "role")
@@ -547,16 +567,21 @@ export class StaffModel {
                 ? []
                 : device.task.map((e) => {
                     return {
+                      id: e.id,
+                      status: e.status.toLowerCase(),
                       reporterName: e.reporterName,
                       reporterPhoneNumber: e.reporterPhoneNumber,
                       reportedIssue: e.reportedIssue,
                       reportedDate: e.reportedDate,
                       timeIn: e.timeIn,
                       timeOut: e.timeOut,
+                      assignedToId: e.user.id,
                       deviceSerialNumber: device.serialNumber,
                       deviceSimeCard: device.simCardNumber,
                       deviceLocationAddress: device.locationAddress,
-                      assignedTo: "You",
+                      assignedTo: `${
+                        e.user.firstName + " " + e.user.lastName
+                      }, ${e.user.phoneNumber}`,
                     };
                   });
 
@@ -584,6 +609,8 @@ export class StaffModel {
 
           task = getTask.map((e) => {
             return {
+              id: e.id,
+              status: e.status.toLowerCase(),
               reporterName: e.reporterName,
               reporterPhoneNumber: e.reporterPhoneNumber,
               reportedIssue: e.reportedIssue,
@@ -593,9 +620,10 @@ export class StaffModel {
               deviceSerialNumber: e.device.serialNumber,
               deviceSimeCard: e.device.simCardNumber,
               deviceLocationAddress: e.device.locationAddress,
-              assignedTo: `${
-                e.userTask.user.firstName + " " + e.userTask.user.lastName
-              } ${e.userTask.user.phoneNumber}`,
+              assignedToId: e.user.id,
+              assignedTo: `${e.user.firstName + " " + e.user.lastName} ${
+                e.user.phoneNumber
+              }`,
             };
           });
 
@@ -615,37 +643,66 @@ export class StaffModel {
   static reportIssue(body: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        const assignedTo = await UserEntity.findOne({
-          relations: ["office"],
-          where: { id: body["assignedTo"] },
-        });
+        await Promise.all([
+          await UserEntity.findOne({
+            relations: ["office"],
+            where: { id: body["assignedTo"] },
+          }),
+          await DeviceEntity.findOneBy({ id: body["deviceId"] }),
+        ]).then(async ([assignedTo, device]) => {
+          if (body["reportedIssueId"] == "") {
+            // Get device
 
-        // Get device
-        let device = await DeviceEntity.findOneBy({ id: body["deviceId"] });
-        device.status = "not collected";
-        await device.save();
+            device.status = "not collected";
+            await device.save();
 
-        const task = new TaskEntity({
-          reporterName: body["reporterName"],
-          reporterPhoneNumber: body["phoneNumber"],
-          reportedIssue: body["reportedIssue"],
-          reportedDate: body["reportedDate"],
-          timeIn: body["timeIn"],
-          timeOut: body["timeOut"],
-          office: assignedTo.office,
-          device,
-        });
-        // Create task
-        await task.save();
+            const task = new TaskEntity({
+              reporterName: body["reporterName"],
+              reporterPhoneNumber: body["phoneNumber"],
+              reportedIssue: body["reportedIssue"],
+              reportedDate: body["reportedDate"],
+              timeIn: body["timeIn"],
+              timeOut: body["timeOut"],
+              office: assignedTo.office,
+              user: assignedTo,
+              device,
+            });
+            // Create task
+            await task.save();
 
-        // Asign task
-        const userTask = new UserTaskEntity({ user: assignedTo, task });
-        await userTask.save();
-        // Give feedback
-        resolve({
-          status: true,
-          message: "Task created successfull.",
-          data: {},
+            // Asign task
+            const userTask = new UserTaskEntity({ user: assignedTo, task });
+            await userTask.save();
+            // Give feedback
+            resolve({
+              status: true,
+              message: "Task created successfull.",
+              data: {},
+            });
+          } else {
+            device.status = body["reportStatus"].toLowerCase();
+            await device.save();
+
+            // update status
+            await TaskEntity.update(body["reportedIssueId"], {
+              reporterName: body["reporterName"],
+              reporterPhoneNumber: body["phoneNumber"],
+              reportedIssue: body["reportedIssue"],
+              reportedDate: body["reportedDate"],
+              status: body["reportStatus"].toLowerCase(),
+              timeIn: body["timeIn"],
+              timeOut: body["timeOut"],
+              office: assignedTo.office,
+              user: assignedTo,
+              device,
+            });
+            // Give feedback
+            resolve({
+              status: true,
+              message: "Task is up to date.",
+              data: {},
+            });
+          }
         });
       } catch (error) {
         reject(error);
