@@ -28,6 +28,9 @@ export class TaskEntity extends BaseEntity {
   @Column({ nullable: false })
   reporterPhoneNumber: string;
 
+  @Column({ type: "text", default: null })
+  accessories: string;
+
   @Column({ type: "text", nullable: false })
   reportedIssue: string;
 
@@ -42,6 +45,12 @@ export class TaskEntity extends BaseEntity {
 
   @Column({ default: "not collected" })
   status: string;
+
+  @Column({ nullable: false })
+  month: number;
+
+  @Column({ nullable: false })
+  year: number;
 
   // Date
   @CreateDateColumn({ type: "timestamp" })
@@ -87,7 +96,10 @@ export class TaskEntity extends BaseEntity {
       this.reportedIssue = data.reportedIssue;
       this.reportedDate = data.reportedDate;
       this.timeIn = data.timeIn;
+      this.month = data.month;
       this.timeOut = data.timeOut;
+      this.year = data.year;
+      this.accessories = data.accessories;
       this.office = data.office;
       this.device = data.device;
       this.user = data.user;
@@ -101,7 +113,10 @@ interface TaskParameter {
   reportedIssue: string;
   reportedDate: string;
   timeIn: string;
+  year: number;
+  accessories: string;
   timeOut: string;
+  month: number;
   user: UserEntity;
   office: OfficeEntity;
   device: DeviceEntity;

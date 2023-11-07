@@ -400,29 +400,38 @@
                     </div>
                     <div class="modal-body">
                         <!--  -->
-                        <form action="/s/monthly-report" method="post">
+                        <form action="/s/reports" method="post">
                             <div class="row">
-
                                 <!--  -->
-                                <div class="form-group">
-                                    <label>Month <span class="text-danger">&nbsp;*</span></label>
-                                    <select id="monthly" name="monthly" class="form-control">
-                                        <option value="" disabled selected> *** Choose Month *** </option>
-                                        <option value="january">January</option>
-                                        <option value="february">February</option>
-                                        <option value="march">March</option>
-                                        <option value="april">April</option>
-                                        <option value="may">May</option>
-                                        <option value="june">June</option>
-                                        <option value="july">July</option>
-                                        <option value="august">August</option>
-                                        <option value="september">September</option>
-                                        <option value="october">October</option>
-                                        <option value="november">November</option>
-                                        <option value="december">December</option>
-                                    </select>
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-6 col-6">
+                                        <div class="form-group">
+                                            <label>Year <span class="text-danger">&nbsp;*</span></label>
+                                            <input type="text" class="form-control" id="" name="year" placeholder="2023" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-sm-6 col-6">                                
+                                        <!--  -->
+                                        <div class="form-group">
+                                            <label>Month <span class="text-danger">&nbsp;*</span></label>
+                                            <select id="monthly" name="month" class="form-control" required>
+                                                <option value="" disabled selected> *** Choose Month *** </option>
+                                                <option value="0">January</option>
+                                                <option value="1">February</option>
+                                                <option value="2">March</option>
+                                                <option value="3">April</option>
+                                                <option value="4">May</option>
+                                                <option value="5">June</option>
+                                                <option value="6">July</option>
+                                                <option value="7">August</option>
+                                                <option value="8">September</option>
+                                                <option value="9">October</option>
+                                                <option value="10">November</option>
+                                                <option value="11">December</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                            
                                 <!--  -->
                                 <div class="form-group">
                                     <label>Regional Office <span class="text-danger">&nbsp;*</span></label>
@@ -435,7 +444,6 @@
                                         <% } %>
                                     </select>
                                 </div>
-
                                 <!--  -->
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-submit form-control">Generate .CSV File</button>
@@ -458,6 +466,14 @@
         <%- include("../partials/footer") %>
                 
         <script>
+            // Read only
+            $(".readonly").keydown(function(e){
+                e.preventDefault();
+            });
+
+            $("#year").datetimepicker({
+                formatDate: 'yy-mm-dd', timepicker: false
+			});
 
             var offices = JSON.parse(`<%- JSON.stringify(offices) %>`);
             for(let o = 0; o < offices.length; o++) {

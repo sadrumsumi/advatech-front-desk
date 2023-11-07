@@ -153,7 +153,8 @@
                                     <div class="col-lg-6 col-sm-6 col-6">
                                         <div class="form-group">
                                             <label>Time In<span class="text-danger">&nbsp;*</span></label>
-                                            <input type="text" id="datetimepicker_1" name="timeIn" placeholder="Time in.. eg 00:00" required readonly>
+                                            <input type="text" class="readonly" id="datetimepicker_1" 
+                                            name="timeIn" placeholder="Time in.. eg 00:00" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-sm-6 col-6">
@@ -299,6 +300,11 @@
         <%- include("../partials/footer") %>
         
         <script>
+
+            // Read only
+            $(".readonly").keydown(function(e){
+                e.preventDefault();
+            });
 
             var reported = JSON.parse(`<%- JSON.stringify(reported) %>`);
 

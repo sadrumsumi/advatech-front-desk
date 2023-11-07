@@ -161,4 +161,12 @@ export class StaffController {
     req.flash(resp.status == true ? "success" : "error", resp.message);
     res.redirect("/s/task");
   }
+
+  static async reports(req: Request, res: Response, next: NextFunction) {
+    const resp = await StaffModel.reports(req.body).catch(next);
+    req.flash(resp.status == true ? "success" : "error", resp.message);
+    resp.status == true
+      ? res.download(resp.data.file)
+      : res.redirect("/s/devices");
+  }
 }

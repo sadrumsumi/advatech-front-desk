@@ -12,6 +12,9 @@ import {
 import { Equal } from "typeorm";
 import { AppDataSource } from "../../ormconfig";
 import moment = require("moment-timezone");
+import { join } from "path";
+import * as csvWriter from "csv-writer";
+import { title } from "process";
 
 export class StaffModel {
   //
@@ -667,15 +670,28 @@ export class StaffModel {
             relations: ["office"],
             where: { id: body["assignedTo"] },
           }),
-          await DeviceEntity.findOneBy({ id: body["deviceId"] }),
+          await AppDataSource.getRepository(DeviceEntity)
+            .createQueryBuilder("device")
+            .leftJoinAndSelect(
+              "device.task",
+              "task",
+              "task.status = 'not collected'"
+            )
+            .where("device.id = :id", { id: body["deviceId"] })
+            .getOne(),
         ]).then(async ([assignedTo, device]) => {
           if (body["reportedIssueId"] == "") {
             // Get device
 
-            device.status = "not collected";
-            await device.save();
+            await DeviceEntity.update(device.id, {
+              status: "not collected",
+            });
 
+            const today = new Date();
             const task = new TaskEntity({
+              accessories: body["accessories"],
+              year: today.getFullYear(),
+              month: today.getMonth(),
               reporterName: body["reporterName"],
               reporterPhoneNumber: body["phoneNumber"],
               reportedIssue: body["reportedIssue"],
@@ -699,8 +715,12 @@ export class StaffModel {
               data: {},
             });
           } else {
-            device.status = body["reportStatus"].toLowerCase();
-            await device.save();
+            await DeviceEntity.update(device.id, {
+              status:
+                device.task.length > 1
+                  ? "not collected"
+                  : body["reportStatus"].toLowerCase(),
+            });
 
             // update status
             await TaskEntity.update(body["reportedIssueId"], {
@@ -744,6 +764,72 @@ export class StaffModel {
         });
         // Give feedback
         resolve({ status: true, message: "", data: {} });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  static reports(body: any): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // All queries
+        const queries = await TaskEntity.find({
+          where: {
+            month: body["month"],
+            year: body["year"],
+            office: Equal(body["officeId"]),
+          },
+          relations: ["user", "device", "device.customer"],
+        });
+
+        // Data mapping
+        let fileName = "reports";
+        const productMapping = queries.map((value, index, e) => {
+          return {
+            No: index + 1,
+            "COMPANY NAME/OWNER": value.device.customer.companyName,
+            "TRADE NAME": value.device.customer.tradeName,
+            "SERIAL NUMBER": value.device.serialNumber,
+            "DEVICE TELEPHONE": value.device.simCardNumber,
+            LOCATION: value.device.locationAddress,
+            "REPORTER NAME": value.reporterName,
+            "REPORTER TELEPHONE": value.reporterPhoneNumber,
+            "DEVICE PROBLEM": value.reportedIssue,
+            "TIME IN": value.timeIn,
+            ACCESSORIES: value.accessories,
+            TECHNICIAN: `${value.user.firstName + " " + value.user.lastName}, ${
+              value.user.phoneNumber
+            }`,
+            REMARK: value.status,
+            "TIME OUT": value.timeOut,
+          };
+        });
+
+        const filePath = join(__dirname, `../../upload/csv/${fileName}.CSV`);
+        const writer = csvWriter.createObjectCsvWriter({
+          path: filePath,
+          header: [
+            { id: "No", title: "No" },
+            { id: "COMPANY NAME/OWNER", title: "COMPANY NAME/OWNER" },
+            { id: "TRADE NAME", title: "TRADE NAME" },
+            { id: "SERIAL NUMBER", title: "SERIAL NUMBER" },
+            { id: "DEVICE TELEPHONE", title: "DEVICE TELEPHONE" },
+            { id: "LOCATION", title: "LOCATION" },
+            { id: "REPORTER NAME", title: "REPORTER NAME" },
+            { id: "REPORTER TELEPHONE", title: "REPORTER TELEPHONE" },
+            { id: "DEVICE PROBLEM", title: "DEVICE PROBLEM" },
+            { id: "TIME IN", title: "TIME IN" },
+            { id: "ACCESSORIES", title: "ACCESSORIES" },
+            { id: "TECHNICIAN", title: "TECHNICIAN" },
+            { id: "REMARK", title: "REMARK" },
+            { id: "TIME OUT", title: "TIME OUT" },
+          ],
+        });
+
+        writer.writeRecords(productMapping).then(() => {
+          resolve({ status: true, message: null, data: { file: filePath } });
+        });
       } catch (error) {
         reject(error);
       }
