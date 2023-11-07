@@ -18,6 +18,8 @@ export class StaffController {
     if (!(new Auth(req).role == "admin"))
       return next(new Error("Permission denied."));
     const resp = await StaffModel.office().catch(next);
+    resp.data["notifiy"] = 0;
+    resp.data["notifications"] = [];
     res.render("s/office", { data: resp.data });
   }
 
@@ -42,6 +44,8 @@ export class StaffController {
     if (!(new Auth(req).role == "admin"))
       return next(new Error("Permission denied."));
     const resp = await StaffModel.users().catch(next);
+    resp.data["notifiy"] = 0;
+    resp.data["notifications"] = [];
     res.render("s/users", { data: resp.data });
   }
 
@@ -68,6 +72,8 @@ export class StaffController {
       return next(new Error("Permission denied."));
     let officeId = session.role == "admin" ? null : session.officeId;
     const resp = await StaffModel.customers(officeId).catch(next);
+    resp.data["notifiy"] = 0;
+    resp.data["notifications"] = [];
     res.render("s/customers", { data: resp.data });
   }
 
@@ -117,6 +123,8 @@ export class StaffController {
   static async reportedIssue2(req: Request, res: Response, next: NextFunction) {
     const session = new Auth(req);
     const resp = await StaffModel.reportedIssue2(session.id).catch(next);
+    resp.data["notifiy"] = 0;
+    resp.data["notifications"] = [];
     res.render("s/reported-issue-2", { data: { data: resp.data } });
   }
 
@@ -125,7 +133,12 @@ export class StaffController {
     req.params["officeId"] = new Auth(req).officeId;
     const resp = await StaffModel.reportedIssue(req.params).catch(next);
     res.render("s/reported-issue", {
-      data: { deviceId: req.params["deviceId"], data: resp.data },
+      data: {
+        deviceId: req.params["deviceId"],
+        notifiy: 0,
+        notifications: [],
+        data: resp.data,
+      },
     });
   }
 

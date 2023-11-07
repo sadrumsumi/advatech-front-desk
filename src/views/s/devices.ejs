@@ -69,15 +69,13 @@
                                                 let offices = data["offices"];
                                                 for(let i in offices) {
                                             %>
-                                                <table class="table">
+                                                <table class="table <%= 'table_' + i %>">
                                                     <thead>
                                                         <tr>
                                                             <th><label class="name"><%= offices[i]['details'] %></label></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-
-
                                                         <tr class="">
                                                             <td rowspan="12">
                                                                 <div class="row" style="padding: 10px;">
@@ -149,10 +147,8 @@
                                                                 </div>
                                                             </td>
                                                         </tr>
-
-                                                        
                                                     </tbody>
-                                                </table>
+                                                </table><br><br><br>
                                             <% } %>
 										</div>
 									</div>
@@ -460,6 +456,30 @@
         
         <!-- Script -->
         <%- include("../partials/footer") %>
+                
+        <script>
+
+            var offices = JSON.parse(`<%- JSON.stringify(offices) %>`);
+            for(let o = 0; o < offices.length; o++) {
+                $(`.table_${o}`).DataTable({
+                    "bFilter": true,
+                    "sDom": 'fBtlpi',  
+                    'pagingType': 'numbers', 
+                    // "ordering": true,
+                    // "order": [[6, 'desc']],
+                    "language": {
+                        search: ' ',
+                        sLengthMenu: '_MENU_',
+                        searchPlaceholder: "Search...",
+                        info: "_START_ - _END_ of _TOTAL_ items",
+                    },
+                    initComplete: (settings, json)=>{
+                        $('.dataTables_filter').appendTo('#tableSearch');
+                        $('.dataTables_filter').appendTo('.search-input');
+                    },	
+                });
+            }
+        </script>
         
     </body>
 </html>

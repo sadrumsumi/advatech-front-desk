@@ -17,8 +17,7 @@ export class StaffModel {
   static monthlyReport(body: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-
-        console.log(body)
+        console.log(body);
 
         // Give feedback
         resolve({ status: true, message: "", data: {} });
@@ -355,11 +354,15 @@ export class StaffModel {
         //
         await Promise.all([
           await CityEntity.find(),
+          await TaskEntity.find({
+            relations: ["device"],
+            where: { status: "not collected" },
+          }),
           await OfficeEntity.find({
             where: officeId ? { id: officeId } : {},
             relations: ["city", "customer", "device", "device.task"],
           }),
-        ]).then(([cities, getOffices]) => {
+        ]).then(([cities, queries, getOffices]) => {
           //
           let officeData: any[] = [];
           let offices: any[] = [];
@@ -408,7 +411,20 @@ export class StaffModel {
           resolve({
             status: true,
             message: "Success",
-            data: { cities, office: officeData, offices, customers },
+            data: {
+              cities,
+              offices,
+              customers,
+              notifiy: queries.length,
+              notifications: queries.map((e) => {
+                return {
+                  deviceId: e.device.id,
+                  date: e.createdAt,
+                  query: e.reportedIssue,
+                };
+              }),
+              office: officeData,
+            },
           });
         });
       } catch (error) {

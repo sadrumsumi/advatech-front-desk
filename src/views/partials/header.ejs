@@ -28,7 +28,7 @@
         <!-- Notifications -->
         <li class="nav-item dropdown">
             <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
-                <img src="/assets/img/icons/notification-bing.svg" alt="img"> <span class="badge rounded-pill">0</span>
+                <img src="/assets/img/icons/notification-bing.svg" alt="img"> <span class="badge rounded-pill"><%= data['notifiy'] %></span>
             </a>
             <div class="dropdown-menu notifications">
                 <div class="topnav-dropdown-header">
@@ -37,17 +37,22 @@
                 <div class="noti-content">
                     <ul class="notification-list">
                         <li class="notification-message">
-                            <a href="/s/reported-issues/">
-                                <div class="media d-flex">
-                                    <span class="avatar flex-shrink-0">
-                                        <img alt="" src="/assets/img/profiles/avatar-02.jpg">
-                                    </span>
-                                    <div class="media-body flex-grow-1">
-                                        <p class="noti-details"><span class="noti-title">John Doe</span> added new task <span class="noti-title">Patient appointment booking</span></p>
-                                        <p class="noti-time"><span class="notification-time">4 mins ago</span></p>
+                            <%
+                                let notifications = data["notifications"];
+                                for(let n = 0; n < notifications.length; n++) {
+                            %>
+                                <a href="/s/reported-issue/<%= notifications[n]['deviceId'] %>">
+                                    <div class="media d-flex">
+                                        <span class="avatar flex-shrink-0">
+                                            <img alt="" src="/assets/img/profiles/avatar-02.jpg">
+                                        </span>
+                                        <div class="media-body flex-grow-1">
+                                            <p class="noti-details"><span class="noti-title"><%= notifications[n]['query'] %></span></p>
+                                            <p class="noti-time"><span class="notification-time"><%= notifications[n]['date'] %></span></p>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            <% } %>
                         </li>
                     </ul>
                 </div>
