@@ -16,7 +16,7 @@ const genarate = (data: Genarate): Promise<any> => {
           officeId: data.officeId,
         },
         process.env.MACHINE_SECRETE,
-        { expiresIn: "2h", algorithm: "HS256" }
+        { expiresIn: "3h", algorithm: "HS256" }
       );
       resolve(token);
     } catch (error) {
