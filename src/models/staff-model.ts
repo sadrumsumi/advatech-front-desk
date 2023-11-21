@@ -444,7 +444,7 @@ export class StaffModel {
         const checkDevice = await DeviceEntity.findOne({
           where: [
             { serialNumber: body["serialNumber"] },
-            { simCardNumber: body["simCardNumber"] },
+            // { simCardNumber: body["simCardNumber"] },
           ],
         });
 

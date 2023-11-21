@@ -21,7 +21,7 @@ export class DeviceEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column({ unique: true, nullable: false })
+  @Column({ nullable: false })
   simCardNumber: string;
 
   @Column({ unique: true, nullable: false })
